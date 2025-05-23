@@ -1,6 +1,6 @@
 import React,{useEffect, useState} from 'react';
 import {createServicioPreCotizacion, createPreCotizacion, getServicioData } from './../../../Api/Api';
-import { Widget, addResponseMessage, addLinkSnippet, toggleMsgLoader, toggleWidget } from 'react-chat-widget-react-18';
+import { Widget, addResponseMessage, addLinkSnippet, toggleMsgLoader, toggleWidget, deleteMessages } from 'react-chat-widget-react-18';
 import 'react-chat-widget-react-18/lib/styles.css';
 import './chatbot.css';
 
@@ -298,7 +298,7 @@ function Chatbot() {
           return;
         } */
         setFormData({ ...formData, correo: msg });
-        addResponseMessage('¿Cuál es el nombre de la empresa?');
+        addResponseMessage('¿Cuál es el nombre de la empresa?(como este registrado ante el sad)');
         setStep(4);
         break;
       case 4:
@@ -662,6 +662,7 @@ function Chatbot() {
         
       case 11:
         if (msg.toLowerCase() === 'sí' || msg.toLowerCase() === 'si') {
+          deleteMessages();
           setFormData({
             nombre: '',
             apellido: '',
@@ -677,10 +678,29 @@ function Chatbot() {
           setStep(0);
         } else {
           addResponseMessage('¡Gracias por usar nuestro servicio!');
-          setStep(999);
+          setStep(12);
         }
         break;
-      default:
+
+        case 12:
+        // Si el usuario escribe cualquier cosa, reinicia el flujo
+        deleteMessages();
+        setFormData({
+          nombre: '',
+          apellido: '',
+          correo: '',
+          telefono: '',
+          empresa: '',
+          fechaSolicitud: '',
+          fechaCaducidad: '',
+          servicios: [],
+        });
+        setServicioActual({});
+        addResponseMessage("¡Hola de nuevo! Para comenzar, ¿cuál es tu nombre?");
+        setStep(0);
+        break;
+      
+        default:
         addResponseMessage('Ya hemos terminado. ¡Gracias!');
     }
   };
