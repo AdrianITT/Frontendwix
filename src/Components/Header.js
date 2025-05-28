@@ -55,15 +55,16 @@ const Header = () => {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link fs-5 fw-semibold" href="#Contacto">
-                  Contacto
-                </a>
-              </li>
-              <li className="nav-item">
                 <a className="nav-link fs-5 fw-semibold" href="#Acreditaciones">
                   Acreditaciones
                 </a>
               </li>
+              <li className="nav-item">
+                <a className="nav-link fs-5 fw-semibold" href="#Contacto">
+                  Contacto
+                </a>
+              </li>
+              
             </ul>
           </div>
         </div>

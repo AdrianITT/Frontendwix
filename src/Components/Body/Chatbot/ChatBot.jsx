@@ -65,10 +65,10 @@ function Chatbot() {
 
   const validacionNombre = (nombre) => {
     const regex = /^([A-Z][a-z]+)(\s[A-Z][a-z]+)*$/;
-  return regex.test(nombre) && nombre.length <= 15;
+  return regex.test(nombre) && nombre.length <= 25;
   }
   const validacionApellido = (apellido) => {
-    const regex = /^[A-Z][a-zA-Z]{0,13}$/;
+    const regex = /^[A-Z][a-zA-Z]{0,25}$/;
     return regex.test(apellido);
   }
   const validacionCorreo = (correo) => {
@@ -76,9 +76,10 @@ function Chatbot() {
     return regex.test(correo);
   }
   const validacionTelefono = (telefono) => {
-    const regex = /^[0-9]{10}$/;
-    return regex.test(telefono);
-  }
+    const regex = /^\(?\d{2,4}\)?[-.\s]?\d{3}[-.\s]?\d{4}(?:\s?(?:ext|x|ext\.)\s?\d{1,5})?$/i;
+    return regex.test(telefono) && telefono.length <= 25;
+  };
+  
   const validacionEmpresa = (empresa) => {
     const regex = /^[A-Z][a-zA-Z]{0,20}$/;
     return regex.test(empresa);
@@ -257,12 +258,19 @@ function Chatbot() {
         addResponseMessage('¿Cuál es tu correo electrónico?');
         setStep(2); */
         setFormData({ ...formData, apellido: msg });
-        addResponseMessage('¿Cuál es tu número telefónico?');
+        addResponseMessage('Por favor, ingresa un número telefónico válido. Puedes usar espacios, guiones o extensión. Ejemplos:');
+      addResponseMessage('➡️ 664-123-4567');
+      addResponseMessage('➡️ 6641234567 ext.123');
+      addResponseMessage('➡️ (664) 123 4567 x123');
+      addResponseMessage('¿Cuál es tu número telefónico?');
         setStep(2);
         break;
       case 2:
         if (!validacionTelefono(msg)) {
-          addResponseMessage('Por favor, ingresa un número telefónico válido (10 dígitos).');
+          addResponseMessage('Por favor, ingresa un número telefónico válido. Puedes usar espacios, guiones o extensión. Ejemplos:');
+          addResponseMessage('➡️ 664-123-4567');
+          addResponseMessage('➡️ 6641234567 ext.123');
+          addResponseMessage('➡️ (664) 123 4567 x123');
           addResponseMessage('¿Cuál es tu número telefónico?');
           return;
         }
@@ -278,7 +286,8 @@ function Chatbot() {
         addResponseMessage('¿Cuál es tu número telefónico?');
         setStep(3); */
         break;
-      case 3:
+      
+        case 3:
         if (!validacionCorreo(msg)) {
           addResponseMessage('Por favor, ingresa un correo electrónico válido.');
           addResponseMessage('¿Cuál es tu correo electrónico?');
@@ -290,7 +299,7 @@ function Chatbot() {
           return;
         } */
         setFormData({ ...formData, correo: msg });
-        addResponseMessage('¿Cuál es el nombre de la empresa?(como este registrado ante el sad)');
+        addResponseMessage('¿Cuál es el nombre de la empresa?(como este registrado ante el SAT)');
         setStep(4);
         break;
         case 4:
@@ -644,21 +653,26 @@ function Chatbot() {
           break;
 
           case 10:
-            if (msg.toLowerCase() === 'si') {
-              enviarDatos().then((idPreCotizacionGenerada) => {
-                setIdCotizacionEnviada(idPreCotizacionGenerada); // guarda el ID para generar el PDF después
-                addResponseMessage('✅ ¡Gracias por crear la cotización con nosotros!');
-                addResponseMessage('¿Deseas descargar el PDF de la cotización? (sí/no)');
-                setStep(101); // nuevo paso para confirmar descarga
-              });
-              return;
-            } else if (msg.toLowerCase() === 'no') {
-              addResponseMessage('¡Gracias por usar nuestro servicio!');
-              addResponseMessage('¿Deseas crear otra cotización? (sí/no)');
-              setStep(11);
-              return;
-            }
-            break;
+          if (msg.toLowerCase() === 'si') {
+            enviarDatos().then((idPreCotizacionGenerada) => {
+              setIdCotizacionEnviada(idPreCotizacionGenerada); // guarda el ID para generar el PDF después
+              addResponseMessage('✅ ¡Gracias por crear la cotización con nosotros!');
+              addResponseMessage('¿Deseas descargar el PDF de la cotización? (sí/no)');
+              setStep(101); // nuevo paso para confirmar descarga
+            });
+            return;
+          } else if (msg.toLowerCase() === 'no') {
+            addResponseMessage('¡Gracias por usar nuestro servicio!');
+            addResponseMessage('¿Deseas crear otra cotización? (sí/no)');
+            setStep(11);
+            return;
+          } else {
+            addResponseMessage('❌ Respuesta no válida. Por favor responde con "sí" o "no".');
+            addResponseMessage('🔄 Regresando al menú de opciones...');
+            addResponseMessage('¿Qué deseas hacer ahora?\n1. Agregar más servicios\n2. Editar un servicio\n3. Eliminar un servicio\n4. Continuar con la cotización');
+            setStep(9); // ⬅️ Regrésalo al paso 4 del menú (que es step 9)
+          }
+          break;
 
             case 101:
               if (msg.toLowerCase() === 'si') {
