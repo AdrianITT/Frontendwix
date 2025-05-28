@@ -309,7 +309,7 @@ function Chatbot() {
             return;
           }
           setFormData({ ...formData, empresa: msg });
-          addResponseMessage('¿Qué IVA deseas aplicar?\n1. 8%\n2. 16%\n(Escribe 1 o 2)');
+          addResponseMessage('¿Qué IVA deseas aplicar?\n1. 16%\n2. 8%\n(Escribe 1 o 2)');
           setStep(41); // nuevo paso para IVA
           break;
 
