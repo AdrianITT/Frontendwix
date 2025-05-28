@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react';
-import {createServicioPreCotizacion, createPreCotizacion, getServicioData } from './../../../Api/Api';
+import {getServicioData, createPreCotizacionAll, createPDFPreCotizacion } from './../../../Api/Api';
 import { Widget, addResponseMessage, addLinkSnippet, toggleMsgLoader, toggleWidget, deleteMessages } from 'react-chat-widget-react-18';
 import 'react-chat-widget-react-18/lib/styles.css';
 import './chatbot.css';
@@ -12,6 +12,7 @@ function Chatbot() {
     correo: '',
     telefono: '',
     empresa: '',
+    iva:1,
     fechaSolicitud: '',
     fechaCaducidad: '',
     servicios: [],
@@ -23,6 +24,9 @@ function Chatbot() {
   const [campoAEditar, setCampoAEditar] = useState(null);
   const [pasoExtra, setPasoExtra] = useState(null); // variable temporal para saber que luego viene la cantidad
   const [servicios, setServicios] = useState([]); // Estado para almacenar los servicios
+  const [idCotizacionEnviada, setIdCotizacionEnviada] = useState(null);
+  const Organizacion=3;
+  const cotizacion =0;
 
 
 
@@ -41,7 +45,7 @@ function Chatbot() {
     
     const fetchServicios = async () => {
       try {
-        const response = await getServicioData(7); // Cambia el ID según sea necesario
+        const response = await getServicioData(Organizacion); // Cambia el ID según sea necesario
         setServicios(response.data);
         //console.log("Servicios:", response.data);
       } catch (error) {
@@ -122,56 +126,44 @@ function Chatbot() {
   const enviarDatos = async () => {
     try {
       const today = new Date();
-      const fechaSolicitud = today.toISOString().split('T')[0]; // formato YYYY-MM-DD
-
+      const fechaSolicitud = today.toISOString().split('T')[0];
+  
       const futureDate = new Date();
       futureDate.setDate(today.getDate() + 30);
       const fechaCaducidad = futureDate.toISOString().split('T')[0];
-      // Crear la pre-cotización principal
-      const preCotizacion = await createPreCotizacion({
+  
+      // Construir payload completo
+      const payload = {
+        telefonocelular: formData.telefono,
+        nombreEmpresa: formData.empresa,
         nombreCliente: formData.nombre,
         apellidoCliente: formData.apellido,
         correo: formData.correo,
-        denominacion:"MXN",
-        telefonocelular: formData.telefono,
-        nombreEmpresa: formData.empresa,
-        fechaSolicitud:fechaSolicitud,
-        fechaCaducidad:fechaCaducidad,
-        descuento:0,
-        iva:1,
-        organizacion:7,
-        tipoMoneda:1,
-        estado: 8,
-      });
-      //console.log("Pre-cotización creada:", preCotizacion);
-      // Aquí puedes obtener el ID de la pre-cotización creada
-      const idPreCotizacion = preCotizacion.data.id; // Ajusta según tu respuesta
-      //console.log("ID de la pre-cotización:", idPreCotizacion);
-      //console.log("Servicios a agregar:", formData.servicios);
-      // Crear los servicios asociados
-      for (const servicio of formData.servicios) {
-        console.log("Servicio a agregar:", servicio);
-        const servicioEncontrado = servicios.find(s => s.numero === Number(servicio.numero));
-        //console.log("Servicio a agregar cantidad:", servicio.cantidad);
-        //console.log("Servicio a agregar numero", servicio.numero);
-        await createServicioPreCotizacion({
-          descripcion: "",
-          precio:"0",
-          cantidad:    Number(servicio.cantidad)  || 0,
-          preCotizacion: idPreCotizacion,
-          servicio:    servicioEncontrado.id,
-          
-        });
-      }
+        iva: formData.iva,
+        fechaSolicitud,
+        fechaCaducidad,
+        servicios: formData.servicios.map(servicio => {
+          const encontrado = servicios.find(s => s.numero === Number(servicio.numero));
+          return {
+            servicio_id: encontrado?.id,
+            cantidad: Number(servicio.cantidad) || 0,
+          };
+        }),
+      };
   
+      // Enviar a la nueva vista
+      const reponse=await createPreCotizacionAll(payload);
+      const dataPC=reponse.data.id;
+      console.log("data createPreCotizacionAll:",dataPC);
+      setIdCotizacionEnviada(dataPC);
       addResponseMessage("✅ ¡Cotización enviada exitosamente!");
-      //console.log("Datos enviados:", formData);
+      return dataPC;
     } catch (error) {
-      console.error("Error al enviar datos:", error);
+      console.error("Error al enviar datos:", error.response?.data || error.message);
       addResponseMessage("❌ Hubo un error al enviar la cotización. Inténtalo de nuevo.");
     }
   };
-        
+  
 
   const handleNewUserMessage = (msg) => {
     if (campoAEditar !== null) {
@@ -301,34 +293,43 @@ function Chatbot() {
         addResponseMessage('¿Cuál es el nombre de la empresa?(como este registrado ante el sad)');
         setStep(4);
         break;
-      case 4:
-        if (!validacionEmpresa(msg)) {
-          addResponseMessage('Por favor, ingresa un nombre de empresa válido (inicia con mayúscula y máximo 20 letras).');
-          addResponseMessage('¿Cuál es el nombre de la empresa?');
-          return;
-        }
-        const nuevoFormData = { ...formData, empresa: msg };
-        setFormData(nuevoFormData);
-        addResponseMessage('¡Gracias por completar el formulario!');
-          console.log('Datos finales del formulario:', formData);
-      
-          // Mostrar resumen para edición
-          const resumen = `
-          1. Nombre: ${nuevoFormData.nombre}
-          2. Apellido: ${nuevoFormData.apellido}
-          3. Correo: ${nuevoFormData.correo}
-          4. Teléfono: ${nuevoFormData.telefono}
-          5. Empresa: ${nuevoFormData.empresa}
-          `;
-          addResponseMessage('¿Deseas editar algún dato antes de enviar? Escribe el número del campo que deseas editar o "no" para continuar.');
-          addResponseMessage(resumen);
-          setStep(111);
-        //addResponseMessage('Ahora comenzaras a agregar los servicios');
-        //addResponseMessage('Escribe el número de servicio:');
+        case 4:
+          if (!validacionEmpresa(msg)) {
+            addResponseMessage('Por favor, ingresa un nombre de empresa válido (inicia con mayúscula y máximo 20 letras).');
+            addResponseMessage('¿Cuál es el nombre de la empresa?');
+            return;
+          }
+          setFormData({ ...formData, empresa: msg });
+          addResponseMessage('¿Qué IVA deseas aplicar?\n1. 8%\n2. 16%\n(Escribe 1 o 2)');
+          setStep(41); // nuevo paso para IVA
+          break;
+
+          case 41:
+            if (msg !== '1' && msg !== '2') {
+              addResponseMessage('❌ Opción no válida. Por favor, escribe 1 para 8% o 2 para 16%.');
+              return;
+            }
+            const ivaSeleccionado = msg === '1' ? 1 : 2; // suponiendo que 1=8% y 2=16% en backend
+            const updatedForm = { ...formData, iva: ivaSeleccionado };
+            setFormData(updatedForm);
+          
+            // Mostrar resumen
+            const resumen = `
+          1. Nombre: ${updatedForm.nombre}
+          2. Apellido: ${updatedForm.apellido}
+          3. Correo: ${updatedForm.correo}
+          4. Teléfono: ${updatedForm.telefono}
+          5. Empresa: ${updatedForm.empresa}
+          6. IVA: ${ivaSeleccionado === 1 ? '8%' : '16%'}
+            `;
+            addResponseMessage('¡Gracias por completar el formulario!');
+            addResponseMessage('¿Deseas editar algún dato antes de enviar? Escribe el número del campo que deseas editar o "no" para continuar.');
+            addResponseMessage(resumen);
+            setStep(111); // ya definido en tu flujo
+            break;
+          
         
-        //setStep(6);
-        break;
-      case 5:
+     case 5:
         if (!validacionEmpresa(msg)) {
           addResponseMessage('Por favor, ingresa un nombre de empresa válido (inicia con mayúscula y máximo 20 letras).');
           addResponseMessage('¿Cuál es el nombre de la empresa?');
@@ -642,23 +643,62 @@ function Chatbot() {
           }
           break;
 
-        case 10:
-          if (msg.toLowerCase() === 'si') {
-            enviarDatos();
-            setStep(999);
-            addResponseMessage('¡Cotización enviada!');
-            addResponseMessage('¿Deseas crear otra cotización? (sí/no)');
-            setStep(11); // siguiente paso lógico del flujo
-            return;
-          }else if (msg.toLowerCase() === 'no') {
-            addResponseMessage('¡Gracias por usar nuestro servicio!');
-            addResponseMessage('¿Deseas crear otra cotización? (sí/no)');
-            setStep(11); // siguiente paso lógico del flujo
-            return;
-          }
-        
-          
-          break;
+          case 10:
+            if (msg.toLowerCase() === 'si') {
+              enviarDatos().then((idPreCotizacionGenerada) => {
+                setIdCotizacionEnviada(idPreCotizacionGenerada); // guarda el ID para generar el PDF después
+                addResponseMessage('✅ ¡Gracias por crear la cotización con nosotros!');
+                addResponseMessage('¿Deseas descargar el PDF de la cotización? (sí/no)');
+                setStep(101); // nuevo paso para confirmar descarga
+              });
+              return;
+            } else if (msg.toLowerCase() === 'no') {
+              addResponseMessage('¡Gracias por usar nuestro servicio!');
+              addResponseMessage('¿Deseas crear otra cotización? (sí/no)');
+              setStep(11);
+              return;
+            }
+            break;
+
+            case 101:
+              if (msg.toLowerCase() === 'si') {
+                if (!idCotizacionEnviada) {
+                  addResponseMessage('❌ No se pudo generar el PDF. Inténtalo más tarde.');
+                  addResponseMessage('¿Deseas crear otra cotización? (sí/no)');
+                  setStep(11);
+                  return;
+                }
+                fetch(`http://127.0.0.1:8000/api/precotizacion/${idCotizacionEnviada}/pdf/`)
+                .then(res => res.blob())
+                .then(blob => {
+                  const url = window.URL.createObjectURL(blob);
+                  const link = document.createElement('a');
+                  link.href = url;
+                  link.download = `cotizacion_${idCotizacionEnviada}.pdf`;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                  window.URL.revokeObjectURL(url);
+
+                  addResponseMessage('📄 PDF descargado automáticamente.');
+                  addResponseMessage('¿Deseas crear otra cotización? (sí/no)');
+                  setStep(11);
+                })
+                .catch(() => {
+                  addResponseMessage('❌ Error al descargar el PDF.');
+                  setStep(11);
+                });
+
+              
+              
+              } else if (msg.toLowerCase() === 'no') {
+                addResponseMessage('¿Deseas crear otra cotización? (sí/no)');
+                setStep(11);
+              } else {
+                addResponseMessage('Por favor, responde con "sí" o "no".');
+              }
+              break;
+
         
       case 11:
         if (msg.toLowerCase() === 'sí' || msg.toLowerCase() === 'si') {
@@ -707,7 +747,6 @@ function Chatbot() {
 
   return (
     <div className="chatbot">
-      <h1>Mi chatbot con Chat</h1>
       <Widget
         handleNewUserMessage={handleNewUserMessage}
         title="Chat De Cotizacion"

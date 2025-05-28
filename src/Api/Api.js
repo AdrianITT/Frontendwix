@@ -35,3 +35,7 @@ export const createPreCotizacion = async (data) => {
    export const createServicioPreCotizacion = (data) => Api_Host.post('/precotizacionservicio/', data);
 
    export const getServicioData = async (id) => Api_Host.get(`/allServiciosData/${id}/`);
+
+   export const createPreCotizacionAll=(data)=> Api_Host.post('/precotizacion/crear-con-servicios/',data);
+
+   export const createPDFPreCotizacion=(id)=> Api_Host.get(`precotizacion/${id}/pdf/`);

@@ -137,7 +137,6 @@ const LaboratorioAmbiental = () => {
                 <li>Hidrocarburos totales rango gasolina (fracción ligera)</li>
                 <li>Hidrocarburos totales rango aceite (fracción pesada)</li>
                 <li>Análisis CRIT</li>
-                <li></li>
               </ul>
             </div>
           </div>
