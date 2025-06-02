@@ -1,9 +1,9 @@
 import React,{useEffect, useState} from 'react';
-import {getServicioData, createPreCotizacionAll, createPDFPreCotizacion } from './../../../Api/Api';
+import { createPreCotizacionAll,  getNumberServicio} from './../../../Api/Api';
 import { Widget, addResponseMessage, addLinkSnippet, toggleMsgLoader, toggleWidget, deleteMessages } from 'react-chat-widget-react-18';
 import 'react-chat-widget-react-18/lib/styles.css';
 import './chatbot.css';
-
+//createPreCotizacionAll
 function Chatbot() {
   const [step, setStep] = React.useState(0);
   const [formData, setFormData] = useState({
@@ -13,8 +13,6 @@ function Chatbot() {
     telefono: '',
     empresa: '',
     iva:1,
-    fechaSolicitud: '',
-    fechaCaducidad: '',
     servicios: [],
   });
   const [servicioActual, setServicioActual] = useState({});
@@ -40,27 +38,6 @@ function Chatbot() {
     }
   }, []);
   
-  useEffect(() => {
-
-    
-    const fetchServicios = async () => {
-      try {
-        const response = await getServicioData(Organizacion); // Cambia el ID según sea necesario
-        setServicios(response.data);
-        //console.log("Servicios:", response.data);
-      } catch (error) {
-        console.error("Error al obtener servicios:", error);
-      }
-      
-    };
-    /*setTimeout(() => {
-      toggleWidget();
-
-    }, 3000); */
-
-    fetchServicios();
-    
-  },[]);
 
 
   const validacionNombre = (nombre) => {
@@ -126,13 +103,7 @@ function Chatbot() {
 
   const enviarDatos = async () => {
     try {
-      const today = new Date();
-      const fechaSolicitud = today.toISOString().split('T')[0];
-  
-      const futureDate = new Date();
-      futureDate.setDate(today.getDate() + 30);
-      const fechaCaducidad = futureDate.toISOString().split('T')[0];
-  
+      console.log("formData antes de enviar:",formData);
       // Construir payload completo
       const payload = {
         telefonocelular: formData.telefono,
@@ -141,17 +112,16 @@ function Chatbot() {
         apellidoCliente: formData.apellido,
         correo: formData.correo,
         iva: formData.iva,
-        fechaSolicitud,
-        fechaCaducidad,
         servicios: formData.servicios.map(servicio => {
           const encontrado = servicios.find(s => s.numero === Number(servicio.numero));
+          console.log("encontador: ",encontrado);
+          console.log("encontador.numero: ",encontrado.numero);
           return {
-            servicio_id: encontrado?.id,
+            numero: encontrado?.numero,
             cantidad: Number(servicio.cantidad) || 0,
           };
         }),
       };
-  
       // Enviar a la nueva vista
       const reponse=await createPreCotizacionAll(payload);
       const dataPC=reponse.data.id;
@@ -429,56 +399,66 @@ function Chatbot() {
 
         break;
       
-      case 8:
-        // Entrada de varias cantidades
-      const partesCantidades = msg.split(',').map(c => c.trim());
-        const cantidades = [];
-        let hayCantidadInvalida = false;
-
-        for (let parte of partesCantidades) {
-          const cantidad = parseInt(parte, 10);
-          if (!/^\d+$/.test(parte) || isNaN(cantidad)) {
-            hayCantidadInvalida = true;
-            break;
-          }
-          cantidades.push(cantidad);
-        }
-
-        if (hayCantidadInvalida) {
-          addResponseMessage('❌ Las cantidades deben ser números enteros positivos separados por comas. Intenta de nuevo.');
-          return;
-        }
-
-        if (cantidades.length !== servicioTemporal.numeros.length) {
-          addResponseMessage('❌ El número de cantidades no coincide con el número de servicios seleccionados. Intenta de nuevo.');
-          return;
-        }
-
-        const nuevosServicios = servicioTemporal.numeros.map((numero, index) => ({
-          numero,
-          cantidad: cantidades[index]
-        }));
-
-        setFormData(prev => ({
-          ...prev,
-          servicios: [...prev.servicios, ...nuevosServicios]
-        }));
-        setServicioTemporal({ numeros: [] });
-        /*addResponseMessage('¿Quieres agregar más servicios? (sí/no)');
-        setStep(9); */
-        const serviciosTotales = [...formData.servicios, ...nuevosServicios];
-        const resumenServicios = generarResumenServicios(serviciosTotales, servicios);
-  
-        addResponseMessage('✅ Servicios agregados:');
-        addResponseMessage(resumenServicios);
-        addResponseMessage('Procesando...');
-        toggleMsgLoader();
-        setTimeout(() => {
-          toggleMsgLoader();
-        addResponseMessage('¿Qué deseas hacer ahora?\n1. Agregar más servicios\n2. Editar un servicio\n3. Eliminar un servicio\n4. Continuar con la cotización');
-        },3000);
-        setStep(9);
-        break;
+        case 8:
+          (async () => {
+            const partesCantidades = msg.split(',').map(c => c.trim());
+            const cantidades = [];
+            let hayCantidadInvalida = false;
+        
+            for (let parte of partesCantidades) {
+              const cantidad = parseInt(parte, 10);
+              if (!/^\d+$/.test(parte) || isNaN(cantidad)) {
+                hayCantidadInvalida = true;
+                break;
+              }
+              cantidades.push(cantidad);
+            }
+        
+            if (hayCantidadInvalida) {
+              addResponseMessage('❌ Las cantidades deben ser números enteros positivos separados por comas. Intenta de nuevo.');
+              return;
+            }
+        
+            if (cantidades.length !== servicioTemporal.numeros.length) {
+              addResponseMessage('❌ El número de cantidades no coincide con el número de servicios seleccionados. Intenta de nuevo.');
+              return;
+            }
+        
+            const nuevosServicios = servicioTemporal.numeros.map((numero, index) => ({
+              numero,
+              cantidad: cantidades[index]
+            }));
+        
+            const nuevosServiciosTotales = [...formData.servicios, ...nuevosServicios];
+        
+            // ✅ Obtener los nombres desde el backend
+            try {
+              const response = await getNumberServicio(Organizacion, nuevosServiciosTotales.map(s => s.numero));
+              setServicios(response.data);
+        
+              setFormData(prev => ({
+                ...prev,
+                servicios: nuevosServiciosTotales
+              }));
+              setServicioTemporal({ numeros: [] });
+        
+              const resumenServicios = generarResumenServicios(nuevosServiciosTotales, response.data);
+        
+              addResponseMessage('✅ Servicios agregados:');
+              addResponseMessage(resumenServicios);
+              addResponseMessage('Procesando...');
+              toggleMsgLoader();
+              setTimeout(() => {
+                toggleMsgLoader();
+                addResponseMessage('¿Qué deseas hacer ahora?\n1. Agregar más servicios\n2. Editar un servicio\n3. Eliminar un servicio\n4. Continuar con la cotización');
+              }, 3000);
+              setStep(9);
+            } catch (error) {
+              console.error("Error al obtener nombres de servicios:", error);
+              addResponseMessage('❌ Ocurrió un error al obtener los datos de los servicios. Intenta de nuevo más tarde.');
+            }
+          })();
+          break;
         
         case 9:
           switch (msg.trim()) {
