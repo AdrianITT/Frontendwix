@@ -10,7 +10,7 @@ const LaboratorioAmbiental = () => {
   };
 
   return (
-    <div className="container my-5">
+    <div className="my-5">
       <div className="text-center mb-4">
         <h2 className="fw-bold text-primary">LABORATORIO AMBIENTAL</h2>
         <p className="text-muted">Servicios especializados de análisis ambiental</p>

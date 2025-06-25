@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const Acreditaciones = () => {
   return (
     <div className=" py-5">
-      <div className="container text-center">
+      <div className=" text-center">
         <h2 className="fw-bold mb-3">ACREDITACIONES</h2>
         <div className="border-bottom border-white mx-auto mb-4" style={{ width: "60px", height: "4px" }}></div>
         <p className="mx-auto" style={{ maxWidth: "800px" }}>

@@ -23,7 +23,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="container my-5">
+    <div className="my-5">
       <div className="row">
         <div className="col-12">
           <Maps />

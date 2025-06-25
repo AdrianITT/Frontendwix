@@ -2,7 +2,7 @@ import React from "react";
 
 const AcercaNosotros = () => {
   return (
-    <div className="container py-5" id="Empresa">
+    <div className="py-5" id="Empresa">
       <div className="row align-items-center g-5">
         {/* Imagen */}
         <div className="col-md-5 text-center">

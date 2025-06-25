@@ -2,7 +2,7 @@ import React from "react";
 
 const Empresa = () => {
   return (
-    <div className="container py-5">
+    <div className="py-5">
       <div className="text-center mb-4">
         <h2 className="fw-bold text-primary">Bienvenidos a INADE</h2>
         <p className="lead">Empresa INADE</p>

@@ -2,7 +2,11 @@ import React from 'react';
 
 const Header = () => {
   return (
-    <header style={{ position: 'sticky', top: 0, zIndex: 1000 }}>
+    <header style={{ 
+      position: 'sticky', 
+      top: 0, 
+      zIndex: 1000,
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',}}>
       <nav
         className="navbar navbar-expand-lg py-4"
         style={{ backgroundColor: '#FFFF' }}
@@ -15,7 +19,7 @@ const Header = () => {
             alt="Logo"
             width="120"
             height="60"
-            className="d-inline-block align-text-top"
+            className="d-inline-block align-text-top ms-4"
           />
 
           {/* Botón hamburguesa para móviles */}

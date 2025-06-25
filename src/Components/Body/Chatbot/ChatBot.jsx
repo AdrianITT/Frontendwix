@@ -1,6 +1,6 @@
 import React,{useEffect, useState} from 'react';
 import { createPreCotizacionAll,  getNumberServicio} from './../../../Api/Api';
-import { Widget, addResponseMessage, addLinkSnippet, toggleMsgLoader, toggleWidget, deleteMessages } from 'react-chat-widget-react-18';
+import { Widget, addResponseMessage, addLinkSnippet, toggleMsgLoader, toggleWidget, deleteMessages} from 'react-chat-widget-react-18';
 import 'react-chat-widget-react-18/lib/styles.css';
 import './chatbot.css';
 //createPreCotizacionAll
@@ -23,8 +23,9 @@ function Chatbot() {
   const [pasoExtra, setPasoExtra] = useState(null); // variable temporal para saber que luego viene la cantidad
   const [servicios, setServicios] = useState([]); // Estado para almacenar los servicios
   const [idCotizacionEnviada, setIdCotizacionEnviada] = useState(null);
-  const Organizacion=3;
+  const Organizacion=1;
   const cotizacion =0;
+  const token='django-insecure-2@%z1hx_#+#83_=edd=ur&^)juysf#s8xpjbkg+xxe39ivtd8e';
 
 
 
@@ -38,6 +39,42 @@ function Chatbot() {
     }
   }, []);
   
+
+const disableChatInput = () => {
+  setTimeout(() => {
+    const input = document.querySelector('input[type="text"].rcw-input');
+    const sendBtn = document.querySelector('.rcw-send-icon');
+
+    if (input) {
+      input.disabled = true;
+      input.style.opacity = '0.5';
+      input.style.pointerEvents = 'none';
+    }
+
+    if (sendBtn) {
+      sendBtn.style.pointerEvents = 'none';
+      sendBtn.style.opacity = '0.3';
+    }
+  }, 50); // pequeño delay para asegurarse que el DOM está cargado
+};
+
+const enableChatInput = () => {
+  const input = document.querySelector('input[type="text"].rcw-input');
+  const sendBtn = document.querySelector('.rcw-send-icon');
+
+  if (input) {
+    input.disabled = false;
+    input.style.opacity = '1';
+    input.style.pointerEvents = 'auto';
+  }
+
+  if (sendBtn) {
+    sendBtn.style.pointerEvents = 'auto';
+    sendBtn.style.opacity = '1';
+  }
+};
+
+
 
 
   const validacionNombre = (nombre) => {
@@ -94,9 +131,13 @@ function Chatbot() {
   };
 
   function generarResumenServicios(serviciosTotales, serviciosData) {
+
     return serviciosTotales.map((s, i) => {
       const info = serviciosData.find(serv => serv.numero === s.numero);
+      console.log("info:", info);
       const nombre = info ? info.nombreServicio : `Servicio #${s.numero}`;
+      console.log("nombre:",nombre);
+      console.log("info.nombreServicio:",info.nombreServicio);
       return `${i + 1}. ${nombre}, Cantidad: ${s.cantidad}`;
     }).join('\n');
   }
@@ -123,7 +164,7 @@ function Chatbot() {
         }),
       };
       // Enviar a la nueva vista
-      const reponse=await createPreCotizacionAll(payload);
+      const reponse=await createPreCotizacionAll(payload, token);
       const dataPC=reponse.data.id;
       console.log("data createPreCotizacionAll:",dataPC);
       setIdCotizacionEnviada(dataPC);
@@ -273,39 +314,52 @@ function Chatbot() {
         setStep(4);
         break;
         case 4:
-          if (!validacionEmpresa(msg)) {
+          if (!msg) {
             addResponseMessage('Por favor, ingresa un nombre de empresa válido (inicia con mayúscula y máximo 20 letras).');
             addResponseMessage('¿Cuál es el nombre de la empresa?');
             return;
           }
-          setFormData({ ...formData, empresa: msg });
-          addResponseMessage('¿Qué IVA deseas aplicar?\n1. 16%\n2. 8%\n(Escribe 1 o 2)');
-          setStep(41); // nuevo paso para IVA
-          break;
-
-          case 41:
-            if (msg !== '1' && msg !== '2') {
-              addResponseMessage('❌ Opción no válida. Por favor, escribe 1 para 8% o 2 para 16%.');
-              return;
-            }
-            const ivaSeleccionado = msg === '1' ? 1 : 2; // suponiendo que 1=8% y 2=16% en backend
-            const updatedForm = { ...formData, iva: ivaSeleccionado };
+            const updatedForm = { ...formData, empresa: msg, iva: 1 }; // IVA fijo al 16%
             setFormData(updatedForm);
-          
+
             // Mostrar resumen
             const resumen = `
-          1. Nombre: ${updatedForm.nombre}
-          2. Apellido: ${updatedForm.apellido}
-          3. Correo: ${updatedForm.correo}
-          4. Teléfono: ${updatedForm.telefono}
-          5. Empresa: ${updatedForm.empresa}
-          6. IVA: ${ivaSeleccionado === 1 ? '8%' : '16%'}
+            1. Nombre: ${updatedForm.nombre}
+            2. Apellido: ${updatedForm.apellido}
+            3. Correo: ${updatedForm.correo}
+            4. Teléfono: ${updatedForm.telefono}
+            5. Empresa: ${updatedForm.empresa}
             `;
+
             addResponseMessage('¡Gracias por completar el formulario!');
             addResponseMessage('¿Deseas editar algún dato antes de enviar? Escribe el número del campo que deseas editar o "no" para continuar.');
             addResponseMessage(resumen);
-            setStep(111); // ya definido en tu flujo
-            break;
+            setStep(111);
+          break;
+
+          // case 41:
+          //   if (msg !== '1' && msg !== '2') {
+          //     addResponseMessage('❌ Opción no válida. Por favor, escribe 1 para 8% o 2 para 16%.');
+          //     return;
+          //   }
+          //   const ivaSeleccionado = msg === '1' ? 1 : 2; // suponiendo que 1=8% y 2=16% en backend
+          //   const updatedForm = { ...formData, iva: ivaSeleccionado };
+          //   setFormData(updatedForm);
+          
+          //   // Mostrar resumen
+          //   const resumen = `
+          // 1. Nombre: ${updatedForm.nombre}
+          // 2. Apellido: ${updatedForm.apellido}
+          // 3. Correo: ${updatedForm.correo}
+          // 4. Teléfono: ${updatedForm.telefono}
+          // 5. Empresa: ${updatedForm.empresa}
+          // 6. IVA: ${ivaSeleccionado === 1 ? '8%' : '16%'}
+          //   `;
+          //   addResponseMessage('¡Gracias por completar el formulario!');
+          //   addResponseMessage('¿Deseas editar algún dato antes de enviar? Escribe el número del campo que deseas editar o "no" para continuar.');
+          //   addResponseMessage(resumen);
+          //   setStep(111); // ya definido en tu flujo
+          //   break;
           
         
      case 5:
@@ -316,7 +370,7 @@ function Chatbot() {
         }
         addLinkSnippet({
           title: 'Ver catálogo de servicios (PDF)',
-          link: '/pdf/Catalogo_de_servicios.pdf',
+          link: '/PDF/Catalogo_de_servicios.pdf',
           target: '_blank',
         });
         
@@ -334,7 +388,7 @@ function Chatbot() {
           
           addLinkSnippet({
             title: 'Ver catálogo de servicios (PDF)',
-            link: '/pdf/Catalogo_de_servicios.pdf',
+            link: '/PDF/Catalogo_de_servicios.pdf',
             target: '_blank',
           });
           //addResponseMessage('Datos enviados correctamente. ¿Deseas crear otra cotización? (sí/no)');
@@ -433,7 +487,8 @@ function Chatbot() {
         
             // ✅ Obtener los nombres desde el backend
             try {
-              const response = await getNumberServicio(Organizacion, nuevosServiciosTotales.map(s => s.numero));
+              const response = await getNumberServicio(Organizacion, nuevosServiciosTotales.map(s => s.numero), token);
+              console.log("response: ",response);
               setServicios(response.data);
         
               setFormData(prev => ({
@@ -633,9 +688,11 @@ function Chatbot() {
           break;
 
           case 10:
+            toggleMsgLoader();
           if (msg.toLowerCase() === 'si') {
             enviarDatos().then((idPreCotizacionGenerada) => {
               setIdCotizacionEnviada(idPreCotizacionGenerada); // guarda el ID para generar el PDF después
+              toggleMsgLoader();
               addResponseMessage('✅ ¡Gracias por crear la cotización con nosotros!');
               addResponseMessage('¿Deseas descargar el PDF de la cotización? (sí/no)');
               setStep(101); // nuevo paso para confirmar descarga
@@ -655,33 +712,47 @@ function Chatbot() {
           break;
 
             case 101:
+              toggleMsgLoader();
+              
               if (msg.toLowerCase() === 'si') {
-                if (!idCotizacionEnviada) {
+                disableChatInput();
+                setTimeout(()=>{
+                  if (!idCotizacionEnviada) {
                   addResponseMessage('❌ No se pudo generar el PDF. Inténtalo más tarde.');
                   addResponseMessage('¿Deseas crear otra cotización? (sí/no)');
                   setStep(11);
+                  enableChatInput();
                   return;
                 }
-                fetch(`http://127.0.0.1:8000/api/precotizacion/${idCotizacionEnviada}/pdf/`)
-                .then(res => res.blob())
-                .then(blob => {
-                  const url = window.URL.createObjectURL(blob);
-                  const link = document.createElement('a');
-                  link.href = url;
-                  link.download = `cotizacion_${idCotizacionEnviada}.pdf`;
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
-                  window.URL.revokeObjectURL(url);
 
+                fetch(`https://test.simplaxi.com/api/generarPdfPrecotizacionChatbot/${idCotizacionEnviada}/`, {
+                  headers: {
+                    Authorization: token,
+                    },
+                  })
+                  .then(res => res.blob())
+                  .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `cotizacion_${idCotizacionEnviada}.pdf`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                    toggleMsgLoader();
                   addResponseMessage('📄 PDF descargado automáticamente.');
                   addResponseMessage('¿Deseas crear otra cotización? (sí/no)');
                   setStep(11);
+                  enableChatInput();
                 })
                 .catch(() => {
                   addResponseMessage('❌ Error al descargar el PDF.');
+                  toggleMsgLoader();
                   setStep(11);
+                  enableChatInput();
                 });
+              },3000);
 
               
               

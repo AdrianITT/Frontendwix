@@ -14,7 +14,7 @@ import Chatbot from "./Chatbot/ChatBot";
 const Body = () => {
   return (
     <div>
-      <div className="container">
+      <div>
         <div className="row">
           <div className="col-12">
           <section id="inicio"><Carusel /></section>

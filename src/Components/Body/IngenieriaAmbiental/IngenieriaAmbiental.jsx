@@ -19,12 +19,12 @@ const IngenieriaAmbiental = () => {
   ];
 
   return (
-    <div className="container my-5">
+    <div className="my-5">
       <div className="row align-items-center shadow rounded-4 overflow-hidden bg-white">
         {/* Columna de imagen */}
         <div className="col-md-6 p-0">
           <img
-            src="/Ambiente.jpeg"
+            src="/IMG_0639.png"
             alt="Ingeniería Ambiental"
             className="img-fluid w-100 h-100 object-fit-cover"
             style={{ maxHeight: "100%", minHeight: "300px" }}

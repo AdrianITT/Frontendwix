@@ -2,7 +2,7 @@ import React from "react";
 
 const OurTeam = () => {
   return (
-    <div className="container my-5">
+    <div className="my-5">
       {/* Título principal */}
       <div className="text-center mb-5">
         <h1 className="fw-bold">NUESTRO EQUIPO</h1>
