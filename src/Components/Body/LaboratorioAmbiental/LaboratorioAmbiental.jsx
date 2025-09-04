@@ -1,150 +1,126 @@
-import React, { useState } from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import React, { useEffect, useRef, useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import "./lab.css";
 
-const LaboratorioAmbiental = () => {
+const SECCIONES = [
+  {
+    key: 1,
+    titulo: "MUESTREO Y ANÁLISIS DE AGUAS",
+    icon: "bi-droplet-half",
+    items: ["Residuales", "Potables"],
+  },
+  {
+    key: 2,
+    titulo: "FUENTES FIJAS",
+    icon: "bi-wind",
+    items: [
+      "Humedad en ductos",
+      "Gases de combustión",
+      "Partículas suspendidas totales perimetrales",
+      "PM10 perimetrales",
+      "Óxidos de nitrógeno",
+      "SO₂, SO₃ y neblinas ácidas/alcalinas",
+      "Compuestos orgánicos volátiles",
+      "Ruido de fuentes fijas",
+    ],
+  },
+  {
+    key: 3,
+    titulo: "LABORAL",
+    icon: "bi-briefcase",
+    items: [
+      "Ruido laboral",
+      "Temperaturas extremas y abatidas",
+      "Sustancias químicas",
+      "Iluminación",
+      "Resistencia de tierras físicas y continuidad",
+      "Vibraciones",
+    ],
+  },
+  {
+    key: 4,
+    titulo: "OTROS",
+    icon: "bi-bezier",
+    items: [
+      "Hidrocarburos totales rango diésel (fracción media)",
+      "Hidrocarburos totales rango gasolina (fracción ligera)",
+      "Hidrocarburos totales rango aceite (fracción pesada)",
+      "Análisis CRIT",
+    ],
+  },
+];
+
+export default function LaboratorioAmbiental() {
   const [activeKey, setActiveKey] = useState(null);
+  const secRef = useRef(null);
 
-  const toggleCollapse = (key) => {
-    setActiveKey(activeKey === key ? null : key);
-  };
+  const toggleCollapse = (key) => setActiveKey((k) => (k === key ? null : key));
+
+  // Reveal on scroll
+  useEffect(() => {
+    const els = secRef.current?.querySelectorAll(".reveal") ?? [];
+    const obs = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add("show")),
+      { threshold: 0.16 }
+    );
+    els.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
 
   return (
-    <div className="my-5">
-      <div className="text-center mb-4">
-        <h2 className="fw-bold text-primary">LABORATORIO AMBIENTAL</h2>
-        <p className="text-muted">Servicios especializados de análisis ambiental</p>
+    <section className="lab-sec py-5" ref={secRef}>
+      <div className="container">
+        <div className="text-center mb-4 reveal">
+          <h2 className="fw-bold text-primary m-0">LABORATORIO AMBIENTAL</h2>
+          <div className="divider-anim mx-auto my-3" aria-hidden="true" />
+          <p className="text-muted">Servicios especializados de análisis ambiental</p>
+        </div>
+
+        <div className="accordion gap-3 d-grid reveal">
+          {SECCIONES.map((sec) => {
+            const open = activeKey === sec.key;
+            return (
+              <div className={`accordion-item glass shadow-sm rounded-4 ${open ? "is-open" : ""}`} key={sec.key}>
+                <h2 className="accordion-header">
+                  <button
+                    className={`accordion-button rounded-4 ${open ? "" : "collapsed"}`}
+                    type="button"
+                    onClick={() => toggleCollapse(sec.key)}
+                    aria-expanded={open}
+                  >
+                    <i className={`me-2 ${sec.icon}`}></i>
+                    {sec.titulo}
+                    <i className={`bi bi-chevron-down ms-auto chevron ${open ? "rot" : ""}`} />
+                  </button>
+                </h2>
+
+                <div className={`accordion-collapse collapse ${open ? "show" : ""}`}>
+                  <div className="accordion-body">
+                    <div className="chip-wrap">
+                      {sec.items.map((it) => (
+                        <span key={it} className="badge rounded-pill text-bg-light border chip">
+                          {it}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* CTAs */}
+        <div className="text-center mt-4 reveal">
+          <a href="#Contacto" className="btn btn-primary btn-lg rounded-pill me-2">
+            Solicitar cotización
+          </a>
+          <a href="#Acreditaciones" className="btn btn-outline-primary rounded-pill">
+            Ver acreditaciones
+          </a>
+        </div>
       </div>
-
-      <div className="accordion" id="accordionExample">
-
-        {/* Sección 1 */}
-        <div className="accordion-item">
-          <h2 className="accordion-header" id="headingOne">
-            <button
-              className={`accordion-button ${activeKey !== 1 ? "collapsed" : ""}`}
-              type="button"
-              onClick={() => toggleCollapse(1)}
-              aria-expanded={activeKey === 1}
-              aria-controls="collapseOne"
-            >
-              MUESTREO Y ANÁLISIS DE AGUAS
-            </button>
-          </h2>
-          <div
-            id="collapseOne"
-            className={`accordion-collapse collapse ${activeKey === 1 ? "show" : ""}`}
-            aria-labelledby="headingOne"
-            data-bs-parent="#accordionExample"
-          >
-            <div className="accordion-body">
-              <ul>
-                <li>Residuales</li>
-                <li>Potables</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Sección 2 */}
-        <div className="accordion-item">
-          <h2 className="accordion-header" id="headingTwo">
-            <button
-              className={`accordion-button ${activeKey !== 2 ? "collapsed" : ""}`}
-              type="button"
-              onClick={() => toggleCollapse(2)}
-              aria-expanded={activeKey === 2}
-              aria-controls="collapseTwo"
-            >
-              FUENTES FIJAS
-            </button>
-          </h2>
-          <div
-            id="collapseTwo"
-            className={`accordion-collapse collapse ${activeKey === 2 ? "show" : ""}`}
-            aria-labelledby="headingTwo"
-            data-bs-parent="#accordionExample"
-          >
-            <div className="accordion-body">
-              <ul>
-                <li>Humedad en ductos</li>
-                <li>Gases de combustión</li>
-                <li>Partículas suspendidas totales perimetrales</li>
-                <li>PM10 perimetrales</li>
-                <li>Óxidos de nitrógeno</li>
-                <li>SO₂, SO₃ y neblinas ácidas/alcalinas</li>
-                <li>Compuestos orgánicos volátiles</li>
-                <li>Ruido de fuentes fijas</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Sección 3 */}
-        <div className="accordion-item">
-          <h2 className="accordion-header" id="headingThree">
-            <button
-              className={`accordion-button ${activeKey !== 3 ? "collapsed" : ""}`}
-              type="button"
-              onClick={() => toggleCollapse(3)}
-              aria-expanded={activeKey === 3}
-              aria-controls="collapseThree"
-            >
-              LABORAL
-            </button>
-          </h2>
-          <div
-            id="collapseThree"
-            className={`accordion-collapse collapse ${activeKey === 3 ? "show" : ""}`}
-            aria-labelledby="headingThree"
-            data-bs-parent="#accordionExample"
-          >
-            <div className="accordion-body">
-              <ul>
-                <li>Ruido laboral</li>
-                <li>Temperaturas extremas y abatidas</li>
-                <li>Sustancias químicas</li>
-                <li>Iluminación</li>
-                <li>Resistencia de tierras físicas y continuidad</li>
-                <li>Vibraciones</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Sección 4 */}
-        <div className="accordion-item">
-          <h2 className="accordion-header" id="headingFour">
-            <button
-              className={`accordion-button ${activeKey !== 4 ? "collapsed" : ""}`}
-              type="button"
-              onClick={() => toggleCollapse(4)}
-              aria-expanded={activeKey === 4}
-              aria-controls="collapseFour"
-            >
-              OTROS
-            </button>
-          </h2>
-          <div
-            id="collapseFour"
-            className={`accordion-collapse collapse ${activeKey === 4 ? "show" : ""}`}
-            aria-labelledby="headingFour"
-            data-bs-parent="#accordionExample"
-          >
-            <div className="accordion-body">
-              <ul>
-                <li>Hidrocarburos totales rango diésel (fracción media)</li>
-                <li>Hidrocarburos totales rango gasolina (fracción ligera)</li>
-                <li>Hidrocarburos totales rango aceite (fracción pesada)</li>
-                <li>Análisis CRIT</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
+    </section>
   );
-};
-
-export default LaboratorioAmbiental;
+}

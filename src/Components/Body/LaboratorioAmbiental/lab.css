@@ -1,0 +1,84 @@
+/* Fondo agradable y acento */
+.lab-sec{
+  --accent:#0d6efd;
+  background:
+    radial-gradient(900px 420px at 80% -10%, rgba(13,110,253,.07), transparent 60%),
+    linear-gradient(180deg,#f8f9fa 0%, #fff 100%);
+}
+
+/* Divider animado */
+.divider-anim{
+  width: 72px; height: 4px; border-radius: 2px; background: var(--accent);
+  position: relative; overflow: hidden;
+}
+.divider-anim::after{
+  content:""; position:absolute; inset:0; transform:translateX(-100%);
+  background: linear-gradient(90deg, transparent, #fff, transparent);
+  animation: shimmer 2.2s infinite;
+}
+@keyframes shimmer{
+  0%{transform:translateX(-100%)} 60%{transform:translateX(100%)} 100%{transform:translateX(100%)}
+}
+
+/* Tarjetas estilo “glass” */
+.glass{
+  background: rgba(255,255,255,.82);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(0,0,0,.06);
+  transition: box-shadow .25s ease, transform .25s ease, border-color .25s ease;
+}
+.glass:hover{ transform: translateY(-3px); box-shadow: 0 14px 30px rgba(0,0,0,.12); }
+
+/* Header del acordeón */
+.accordion-button{
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+}
+.accordion-button .chevron{ transition: transform .25s ease, opacity .25s ease; opacity:.7; }
+.accordion-button .chevron.rot{ transform: rotate(180deg); opacity:1; }
+.accordion-button:not(.collapsed){
+  background: linear-gradient(180deg, rgba(13,110,253,.06), transparent);
+}
+.accordion-button::after{
+  display: none !important;   /* o: background-image: none !important; content: none; */
+}
+
+/* Contenido en chips y grilla */
+.chip-wrap{
+  display: flex;
+  flex-wrap: wrap;   /* <-- hace que salten a la siguiente línea */
+  gap: .5rem;        /* separación entre chips */
+  align-items: flex-start;
+}
+
+.chip{
+  display: inline-flex;
+  align-items: center;
+  padding: .5rem .8rem;
+  /* Si quieres que nunca se parta el texto dentro de la chip: */
+  white-space: nowrap;
+  width: max-content;
+  /* Si algún texto puede ser MUY largo y quieres cortar con puntos: */
+  /* max-width: 100%; overflow: hidden; text-overflow: ellipsis; */
+}
+
+/* (Opcional) look más “glass” */
+.chip{
+  background: #fff;
+  backdrop-filter: blur(4px);
+}
+
+
+/* Animación on-scroll */
+.reveal{ opacity:0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+.reveal.show{ opacity:1; transform:none; }
+
+/* Detalle “is-open” (borde acentuado) */
+.is-open{ border-color: rgba(13,110,253,.25); }
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce){
+  .reveal{ transition:none; opacity:1; transform:none; }
+  .glass{ transition:none; transform:none; }
+  .divider-anim::after{ animation:none; }
+}

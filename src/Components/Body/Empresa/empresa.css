@@ -1,0 +1,66 @@
+/* Fondo elegante con acentos */
+.empresa-sec{
+  --accent:#0d6efd;
+  background:
+    radial-gradient(900px 420px at 80% -10%, rgba(13,110,253,.07), transparent 60%),
+    linear-gradient(180deg,#ffffff 0%, #ffffff 100%);
+}
+
+/* Card estilo glass */
+.glass{
+  background: rgba(255,255,255,.9);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+/* Divider animado debajo del título */
+.divider-anim{
+  width: 72px; height: 4px; border-radius: 2px; background: var(--accent);
+  position: relative; overflow: hidden;
+}
+.divider-anim::after{
+  content:""; position:absolute; inset:0; transform:translateX(-100%);
+  background: linear-gradient(90deg, transparent, #fff, transparent);
+  animation: shimmer 2.2s infinite;
+}
+@keyframes shimmer{
+  0%{transform:translateX(-100%)} 60%{transform:translateX(100%)} 100%{transform:translateX(100%)}
+}
+
+/* Chips de sedes */
+.chip{
+  padding: .45rem .8rem;
+  background: #fff;
+  backdrop-filter: blur(2px);
+}
+
+/* Bullets con check */
+.about-bullets li{
+  display: flex; gap: .6rem; margin-bottom: .5rem;
+}
+.about-bullets .ico{
+  display:inline-grid; place-items:center;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #e7f1ff; color: var(--accent); font-weight:700;
+}
+
+/* Tarjetas de métricas */
+.stat-card{
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.05);
+  box-shadow: 0 6px 20px rgba(0,0,0,.06);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.stat-card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.1);
+}
+
+/* Animación on-scroll */
+.reveal{ opacity:0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+.reveal.show{ opacity:1; transform:none; }
+
+@media (prefers-reduced-motion: reduce){
+  .reveal{ transition:none; opacity:1; transform:none; }
+  .divider-anim::after{ animation:none; }
+}

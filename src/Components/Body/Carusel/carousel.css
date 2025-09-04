@@ -1,0 +1,63 @@
+/* ===== Full-bleed para romper el .container ===== */
+.full-bleed {
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  width: 100vw;
+}
+
+/* ===== Pantalla completa ===== */
+/* Si tu header es fijo, ajusta esta variable a su altura real */
+:root { --header-h: 72px; }
+
+/* Si NO usas header fijo, deja height: 100vh; */
+.hero-carousel {
+  height: calc(100vh - var(--header-h));
+  min-height: 420px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Imagen a pantalla completa con recorte elegante */
+.hero-img {
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Overlay para contraste de textos */
+.hero-mask {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(180, 179, 179, 0.45) 60%, rgba(0,0,0,.2) 100%);
+  pointer-events: none;
+}
+
+/* Centrado absoluto del caption + CTA */
+.hero-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0 1rem;
+  text-shadow: 0 2px 8px rgba(0,0,0,.35);
+}
+
+/* Controles visibles sobre fondos claros */
+.control-icon {
+  filter: invert(1) grayscale(100%);
+  background-color: rgba(0,0,0,.25);
+  border-radius: 999px;
+  padding: 14px;
+}
+
+/* Navegación suave al ancla */
+html { scroll-behavior: smooth; }
+
+/* Si tienes header fijo, evita que tape el #Empresa al llegar desde el ancla */
+#Empresa { scroll-margin-top: var(--header-h); }
+
+/* Accesibilidad: respeta reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .carousel-fade .carousel-item { transition: none; }
+}

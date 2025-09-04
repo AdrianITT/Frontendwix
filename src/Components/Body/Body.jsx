@@ -16,7 +16,7 @@ const Body = () => {
     <div>
       <div>
         <div className="row">
-          <div className="col-12">
+          <div className="col-ms-12 col-lg-12">
           <section id="inicio"><Carusel /></section>
                
                <section id="Empresa">

@@ -18,18 +18,62 @@ const IngenieriaAmbiental = () => {
     "Actualización al plan de manejo de RME",
   ];
 
+  const imagenesCarrusel = [
+  "/IMG_0639.png",
+  "/IMG_0386.png"
+];
+
   return (
     <div className="my-5">
       <div className="row align-items-center shadow rounded-4 overflow-hidden bg-white">
         {/* Columna de imagen */}
         <div className="col-md-6 p-0">
+         <div id="carruselAmbiental" className="carousel slide carousel-fade h-100" data-bs-ride="carousel" data-bs-interval="3000">
+            <div className="carousel-inner h-100">
+              {imagenesCarrusel.map((src, index) => (
+                <div
+                  className={`carousel-item h-100 ${index === 0 ? "active" : ""}`}
+                  key={index}
+                >
+                  <img
+                    src={src}
+                    alt={`Slide ${index + 1}`}
+                    className="d-block w-100 h-100 object-fit-cover"
+                    style={{ minHeight: "300px", maxHeight: "100%" }}
+                  />
+                </div>
+              ))}
+            </div>
+
+              {/* Botones de control opcionales */}
+              <button
+                className="carousel-control-prev"
+                type="button"
+                data-bs-target="#carruselAmbiental"
+                data-bs-slide="prev"
+              >
+                <span className="carousel-control-prev-icon" aria-hidden="true" />
+                <span className="visually-hidden">Anterior</span>
+              </button>
+              <button
+                className="carousel-control-next"
+                type="button"
+                data-bs-target="#carruselAmbiental"
+                data-bs-slide="next"
+              >
+                <span className="carousel-control-next-icon" aria-hidden="true" />
+                <span className="visually-hidden">Siguiente</span>
+              </button>
+          </div>
+          </div>
+        {/* <div className="col-md-6 p-0">
           <img
             src="/IMG_0639.png"
             alt="Ingeniería Ambiental"
             className="img-fluid w-100 h-100 object-fit-cover"
             style={{ maxHeight: "100%", minHeight: "300px" }}
           />
-        </div>
+        </div> */}
 
         {/* Columna de contenido */}
         <div className="col-md-6 p-4">

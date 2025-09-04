@@ -1,0 +1,84 @@
+.acred-sec {
+  --accent: #0d6efd;
+  background: radial-gradient(1200px 600px at 50% -10%, rgba(13,110,253,.08), transparent 60%),
+              linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+/* Divider animado */
+.divider-anim {
+  width: 64px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+.divider-anim::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, #fff, transparent);
+  animation: shimmer 2s infinite;
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  60% { transform: translateX(100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Reveal on scroll */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.show { opacity: 1; transform: translateY(0); }
+
+/* Tarjeta con tilt */
+.card-tilt {
+  background: #fff;
+  transition: box-shadow .25s ease, transform .25s ease;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+.card-tilt:hover { box-shadow: 0 12px 32px rgba(0,0,0,.12); }
+
+/* Overlay al pasar el mouse */
+.img-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.25);
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+.card-tilt:hover .img-overlay { opacity: 1; }
+
+/* Lightbox */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.72);
+  z-index: 1050;
+  padding: 24px;
+  flex-direction: column;
+}
+.lb-img {
+  max-width: min(92vw, 1100px);
+  max-height: 78vh;
+  object-fit: contain;
+}
+.lb-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  opacity: .9;
+}
+.lb-prev { left: 24px; }
+.lb-next { right: 24px; }
+.lb-close { z-index: 1; }
+
+/* Accesibilidad: respetar reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { transition: none; transform: none; opacity: 1; }
+  .card-tilt, .card-tilt:hover { transition: none; transform: none; }
+  .divider-anim::after { animation: none; }
+}
