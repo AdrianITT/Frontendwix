@@ -1,7 +1,12 @@
-# Rediceño total de la pagina de INADE
-A continuacion se muestran alguans imagenes del resultado final.
+# 🌐 Rediseño total del sitio web de INADE
 
-pagina de INADE:https://inade.mx/
+Este proyecto consiste en el **rediseño completo de la página oficial de [INADE](https://inade.mx/)**, con un enfoque en modernizar la interfaz, mejorar la experiencia del usuario y optimizar el rendimiento general del sitio.
+
+---
+
+## ✨ Vista general del resultado
+
+A continuación se muestran algunas capturas del diseño final implementado:
 
 
 ### 🏠 Página principal
