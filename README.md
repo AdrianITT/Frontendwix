@@ -1,8 +1,8 @@
 # Rediceño total de la pagina de INADE
 
-![Innici de la pagina ](./images/Carrusel)
+![Innici de la pagina ](./images/Carrusel.png)
 
-![Texto alternativo](./images/Bienvenida)
+![Texto alternativo](./images/Bienvenida.png)
 
 ## Available Scripts
 
