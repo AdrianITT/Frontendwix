@@ -1,13 +1,12 @@
 # 🌐 Rediseño total del sitio web de INADE
 
-Este proyecto consiste en el **rediseño completo de la página oficial de [INADE](https://inade.mx/)**, con un enfoque en modernizar la interfaz, mejorar la experiencia del usuario y optimizar el rendimiento general del sitio.
+Este proyecto consiste en el **rediseño completo de la página oficial de [INADE](https://inade.mx/)**, con un enfoque en **modernizar la interfaz**, **mejorar la experiencia del usuario** y **optimizar el rendimiento general** del sitio.
 
 ---
 
 ## ✨ Vista general del resultado
 
 A continuación se muestran algunas capturas del diseño final implementado:
-
 
 ### 🏠 Página principal
 ![Inicio de la página](./images/Carrusel.png)
@@ -28,11 +27,11 @@ A continuación se muestran algunas capturas del diseño final implementado:
 
 ## 🛠️ Tecnologías utilizadas
 
-- **React.js** – framework principal del front-end  
-- **Boostrap** – componentes de interfaz modernos  
+- **React.js** – Framework principal del front-end  
+- **Bootstrap 5** – Componentes de interfaz modernos y responsivos  
 - **HTML5 / CSS3 / JavaScript (ES6+)**  
-- **Git & GitHub** – control de versiones  
-- **Suempresa** – despliegue del sitio  
+- **Git & GitHub** – Control de versiones y despliegue  
+- **Suempresa** – Hosting y despliegue del sitio en producción  
 
 ---
 
