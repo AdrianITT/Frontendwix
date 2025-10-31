@@ -2,13 +2,12 @@
   <img src="./images/logo.png" width="120" alt="INADE Logo">
 </p>
 <h1 align="center">🌐 Rediseño total del sitio web de INADE</h1>
+<p align="center">
+  <img src="https://img.shields.io/badge/React-18.2.0-blue?logo=react" />
+  <img src="https://img.shields.io/badge/Bootstrap-5.3-purple?logo=bootstrap" />
+  <img src="https://img.shields.io/badge/Estado-Completado-green" />
+</p>
 
-
-✅ **1. Añade insignias (badges)** arriba del todo, justo bajo el título:
-```markdown
-![React](https://img.shields.io/badge/React-18.2.0-blue?logo=react)
-![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple?logo=bootstrap)
-![Status](https://img.shields.io/badge/Estado-Completado-green)```
 
 Este proyecto consiste en el **rediseño completo de la página oficial de [INADE](https://inade.mx/)**, con un enfoque en **modernizar la interfaz**, **mejorar la experiencia del usuario** y **optimizar el rendimiento general** del sitio.
 
