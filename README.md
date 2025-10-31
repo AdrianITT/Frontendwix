@@ -1,6 +1,8 @@
-# Getting Started with Create React App
+# Rediceño total de la pagina de INADE
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![Innici de la pagina ](./images/Carrusel)
+
+![Texto alternativo](./images/Bienvenida)
 
 ## Available Scripts
 
