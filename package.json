@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@headlessui/react": "^2.2.3",
     "@heroicons/react": "^2.2.0",
     "@testing-library/dom": "^10.4.0",
@@ -11,6 +12,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.9.0",
     "bootstrap": "^5.3.6",
+    "bootstrap-icons": "^1.13.1",
     "emailjs-com": "^3.2.0",
     "react": "^18.2.0",
     "react-chat-widget-react-18": "^1.0.0",

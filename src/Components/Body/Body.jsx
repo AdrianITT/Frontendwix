@@ -10,6 +10,7 @@ import OurTeam from "./OurTeam/OurTeam";
 import Contact from "./Contact/Contact";
 import ButtonWhatsapp from "./Button/Buttonwhatsapp";
 import Chatbot from "./Chatbot/ChatBot";
+import Feedback from "./Feedback/Feedback";
 
 const Body = () => {
   return (
@@ -28,6 +29,7 @@ const Body = () => {
             <section id="Acreditaciones"><Acreditaciones /></section>
             <section id="Equipo"><OurTeam /></section>
             <section id="Contacto"><Contact /></section>
+            <section id ="QuejasFelicitacionesSugerencias"><Feedback/></section>
             <ButtonWhatsapp />
             <Chatbot />
           </div>
