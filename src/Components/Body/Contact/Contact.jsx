@@ -39,16 +39,16 @@ const Contact = () => {
               <h3 className="mt-4">Cotizaciones:</h3>
               <p className="h4">(663) 323 2910</p>
 
-              <h3 className="mt-4">QUEJAS Y SUGERENCIAS</h3>
+              {/* <h3 className="mt-4">QUEJAS Y SUGERENCIAS</h3>
 
               {success && (
                 <div className="alert alert-success">
                   ¡Gracias por contactarnos! Te responderemos pronto.
                 </div>
-              )}
+              )} */}
 
               {/* Formulario */}
-              <form onSubmit={handleSubmit} className="mt-4">
+              {/* <form onSubmit={handleSubmit} className="mt-4">
                 <input type="hidden" name="_captcha" value="false" />
 
                 <div className="mb-3">
@@ -79,7 +79,7 @@ const Contact = () => {
                 <button type="submit" className="btn btn-primary">
                   Enviar
                 </button>
-              </form>
+              </form> */}
             </div>
 
             <div className="col-md-6 mb-4">
